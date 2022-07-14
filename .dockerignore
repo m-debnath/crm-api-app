@@ -1,0 +1,10 @@
+.github
+.vscode
+proxy
+.env
+.gitignore
+docker-compose.yaml
+Dockerfile
+**/__pycache__
+**/node_modules
+.mypy_cache

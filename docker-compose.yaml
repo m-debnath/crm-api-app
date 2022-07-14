@@ -1,0 +1,73 @@
+version: '3.8'
+services:
+  crm-api-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - "crm-api-app-db"
+    volumes:
+      - .:/app
+      - crm-api-app-static-data:/vol/web
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
+      - POSTGRES_HOST=${POSTGRES_HOST}
+      - POSTGRES_PORT=${POSTGRES_PORT}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_DJANGO_SUPER_USER=${POSTGRES_DJANGO_SUPER_USER}
+      - CACHE_REDIS_HOST=${CACHE_REDIS_HOST}
+      - CACHE_REDIS_PORT=${CACHE_REDIS_PORT}
+      - CACHE_REDIS_PASSWORD=${CACHE_REDIS_PASSWORD}
+      - ALLOWED_HOSTS=${ALLOWED_HOSTS}
+      - CSRF_TRUSTED_ORIGINS=${CSRF_TRUSTED_ORIGINS}
+      - CURRENT_HOST=${CURRENT_HOST}
+      - SESSION_COOKIE_SECURE=${SESSION_COOKIE_SECURE}
+      - CSRF_COOKIE_SECURE=${CSRF_COOKIE_SECURE}
+      - DEBUG=${DEBUG}
+      - DJANGO_ENV=${DJANGO_ENV}
+  crm-api-app-proxy:
+    build:
+      context: ./proxy
+    restart: unless-stopped
+    volumes:
+      - crm-api-app-static-data:/vol/static
+    ports:
+      - "8000:8000"
+    depends_on:
+      - crm-api-app
+  crm-api-app-cache:
+    image: 'redis:7.0.3'
+    restart: unless-stopped
+    command: redis-server --appendonly yes --requirepass ${CACHE_REDIS_PASSWORD}
+  crm-api-app-redis-admin:
+    image: erikdubbelboer/phpredisadmin:v1.17.2
+    restart: unless-stopped
+    environment:
+      - REDIS_1_HOST=${CACHE_REDIS_HOST}
+      - REDIS_1_AUTH=${CACHE_REDIS_PASSWORD}
+    ports:
+      - "9083:80"
+  crm-api-app-db:
+    image: postgres:14.4
+    restart: unless-stopped
+    environment:
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - crm-api-app-db-data:/var/lib/postgresql/data
+  crm-api-app-pgadmin:
+    image: dpage/pgadmin4:6.11
+    restart: unless-stopped
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
+    volumes:
+      - crm-api-app-pgadmin-data:/var/lib/pgadmin
+    ports:
+      - "5050:80"
+volumes:
+  crm-api-app-db-data:
+  crm-api-app-static-data:
+  crm-api-app-pgadmin-data:
