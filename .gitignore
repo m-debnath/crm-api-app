@@ -294,3 +294,7 @@ dist
 
 # Built Visual Studio Code Extensions
 *.vsix
+
+# SSL Certificates
+*.crt
+*.key

@@ -21,6 +21,12 @@ services:
       - CACHE_REDIS_HOST=${CACHE_REDIS_HOST}
       - CACHE_REDIS_PORT=${CACHE_REDIS_PORT}
       - CACHE_REDIS_PASSWORD=${CACHE_REDIS_PASSWORD}
+      - LDAP_HOST=${LDAP_HOST}
+      - LDAP_PORT=${LDAP_PORT}
+      - LDAP_USER_BASEDN=${LDAP_USER_BASEDN}
+      - LDAP_USERNAME_FIELD=${LDAP_USERNAME_FIELD}
+      - LDAP_APPUSER=${LDAP_APPUSER}
+      - LDAP_APPUSER_PASSWORD=${LDAP_APPUSER_PASSWORD}
       - ALLOWED_HOSTS=${ALLOWED_HOSTS}
       - CSRF_TRUSTED_ORIGINS=${CSRF_TRUSTED_ORIGINS}
       - CURRENT_HOST=${CURRENT_HOST}
@@ -35,7 +41,7 @@ services:
     volumes:
       - crm-api-app-static-data:/vol/static
     ports:
-      - "8000:8000"
+      - "8443:443"
     depends_on:
       - crm-api-app
   crm-api-app-cache:
