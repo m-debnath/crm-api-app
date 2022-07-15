@@ -144,9 +144,14 @@ MEDIA_URL = "/static/media/"
 MEDIA_ROOT = "/vol/web/media"
 
 
+# Authentication
+AUTHENTICATION_BACKENDS = [
+    "core.backends.LdapAuthenticationBackend",
+    "django.contrib.auth.backends.ModelBackend",
+]
+
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
-        "api.authentication.LdapAuthentication",
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ]
 }
