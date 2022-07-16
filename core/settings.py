@@ -1,7 +1,7 @@
 import os
+from datetime import timedelta
 from pathlib import Path
 from typing import List
-from datetime import timedelta
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -86,6 +86,12 @@ LDAP_USERNAME_FIELD = os.environ.get("LDAP_USERNAME_FIELD", "")
 LDAP_APPUSER = os.environ.get("LDAP_APPUSER", "")
 LDAP_APPUSER_PASSWORD = os.environ.get("LDAP_APPUSER_PASSWORD", "")
 
+# Authentication
+AUTHENTICATION_BACKENDS = [
+    "core.backends.LdapAuthenticationBackend",
+    "django.contrib.auth.backends.ModelBackend",
+]
+
 CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.redis.RedisCache",
@@ -142,13 +148,6 @@ STATIC_ROOT = "/vol/web/static"
 
 MEDIA_URL = "/static/media/"
 MEDIA_ROOT = "/vol/web/media"
-
-
-# Authentication
-AUTHENTICATION_BACKENDS = [
-    "core.backends.LdapAuthenticationBackend",
-    "django.contrib.auth.backends.ModelBackend",
-]
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [

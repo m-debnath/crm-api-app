@@ -1,8 +1,8 @@
 from django.conf import settings
-from django.contrib.auth.models import User
 from django.contrib.auth.backends import BaseBackend
+from django.contrib.auth.models import User
 from django.utils import timezone
-from ldap3 import ALL, Connection, Server, ALL_ATTRIBUTES
+from ldap3 import ALL, ALL_ATTRIBUTES, Connection, Server
 from ldap3.core.exceptions import LDAPException
 
 
