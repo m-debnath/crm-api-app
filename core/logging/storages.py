@@ -15,7 +15,6 @@ class KafkaStorage(LoggingStorage):
 
         response_code = entry.response.status_code
         response_data = json.dumps(entry.response.data)
-        print(response_data)
 
         # Skip logging in certain conditions
         if (
