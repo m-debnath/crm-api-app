@@ -188,9 +188,9 @@ SIMPLE_JWT = {
     "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=1),
 }
 
-# Logging
+# Logging to Kafka topic
 KAFKA_BOOTSTRAP_SERVERS = os.environ.get("KAFKA_BOOTSTRAP_SERVERS", "")
-KAFKA_TOPIC = os.environ.get("KAFKA_TOPIC", "")
+KAFKA_TOPIC = os.environ.get("KAFKA_TOPIC", "")  #
 KAFKA_PRODUCER_INIT_RETRIES = int(os.environ.get("KAFKA_PRODUCER_INIT_RETRIES", ""))
 KAFKA_FLUSH_BUFFER_SIZE = float(os.environ.get("KAFKA_FLUSH_BUFFER_SIZE", ""))
 KAFKA_FLUSH_INTERVAL = float(os.environ.get("KAFKA_FLUSH_INTERVAL", ""))
@@ -211,6 +211,7 @@ REQUESTLOGS = {
         "csrfmiddlewaretoken",
         "csrftoken",
         "sessionid",
+        "HTTP_COOKIE",
     ],
     "ATTRIBUTE_NAME": "_requestlog",
     "METHODS": ("GET", "PUT", "PATCH", "POST", "DELETE"),
@@ -221,11 +222,6 @@ LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
     "handlers": {
-        "requestlogs_to_file": {
-            "level": "INFO",
-            "class": "logging.FileHandler",
-            "filename": "/app/logs/requestlogs.log",
-        },
         "requestlogs_to_kafka": {
             "level": "INFO",
             "class": "core.logging.handlers.MyKafkaLoggingHandler",
