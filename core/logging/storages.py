@@ -13,6 +13,26 @@ class KafkaStorage(LoggingStorage):
     def store(self, entry):
         kafka_entry = {}
 
+        response_code = entry.response.status_code
+        response_data = json.dumps(entry.response.data)
+        print(response_data)
+
+        # Skip logging in certain conditions
+        if (
+            response_code == 401
+            and "AccessToken" in response_data
+            and "token_not_valid" in response_data
+        ) or (
+            response_code == 405
+            and "GET" in response_data
+            and "not allowed" in response_data
+        ):
+            return None
+
+        print(response_code)
+        print("AccessToken" in response_data)
+        print("token_not_valid" in response_data)
+
         kafka_entry["host"] = socket.gethostname()
         kafka_entry["host_ip"] = socket.gethostbyname(socket.gethostname())
 
@@ -39,9 +59,9 @@ class KafkaStorage(LoggingStorage):
         kafka_entry["request_query_params"] = json.dumps(entry.request.query_params)
         kafka_entry["request_data"] = json.dumps(entry.request.data)
 
-        kafka_entry["response_code"] = entry.response.status_code
+        kafka_entry["response_code"] = response_code
         kafka_entry["response_headers"] = str(entry.response.response.headers)
-        kafka_entry["response_data"] = json.dumps(entry.response.data)
+        kafka_entry["response_data"] = response_data
 
         kafka_entry["env_code"] = settings.DJANGO_ENV
 
