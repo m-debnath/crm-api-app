@@ -17,11 +17,9 @@ class UserViewSet(viewsets.ModelViewSet):
 
     def retrieve(self, request, pk=None):
         requesting_user = self.request.user
-        print(dir(requesting_user))
         queryset = User.objects.all()
         user = get_object_or_404(queryset, pk=pk)
         if requesting_user.id != user.id:
             return Response(status=status.HTTP_403_FORBIDDEN)
-        print(dir(user))
         serializer = UserSerializer(user)
         return Response(serializer.data)

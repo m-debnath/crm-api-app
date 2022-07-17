@@ -29,10 +29,6 @@ class KafkaStorage(LoggingStorage):
         ):
             return None
 
-        print(response_code)
-        print("AccessToken" in response_data)
-        print("token_not_valid" in response_data)
-
         kafka_entry["host"] = socket.gethostname()
         kafka_entry["host_ip"] = socket.gethostbyname(socket.gethostname())
 
