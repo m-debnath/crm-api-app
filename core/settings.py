@@ -19,7 +19,9 @@ CSRF_TRUSTED_ORIGINS_ENV = os.environ.get("CSRF_TRUSTED_ORIGINS")
 if CSRF_TRUSTED_ORIGINS_ENV:
     CSRF_TRUSTED_ORIGINS.extend(CSRF_TRUSTED_ORIGINS_ENV.split(","))
 
-APP_NAME = "Tele2 CRM REST API"
+APP_NAME = os.environ.get("APP_NAME")
+BUSINESS_PROCESS_HEADER = os.environ.get("BUSINESS_PROCESS_HEADER")
+DJANGO_ENV = os.environ.get("DJANGO_ENV")
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -44,6 +46,9 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "requestlogs.middleware.RequestLogsMiddleware",
+    "requestlogs.middleware.RequestIdMiddleware",
+    "api.middleware.CustomHeaderMiddleware",
 ]
 
 ROOT_URLCONF = "core.urls"
@@ -88,7 +93,7 @@ LDAP_APPUSER_PASSWORD = os.environ.get("LDAP_APPUSER_PASSWORD", "")
 
 # Authentication
 AUTHENTICATION_BACKENDS = [
-    "core.backends.LdapAuthenticationBackend",
+    "core.auth.backends.LdapAuthenticationBackend",
     "django.contrib.auth.backends.ModelBackend",
 ]
 
@@ -152,7 +157,8 @@ MEDIA_ROOT = "/vol/web/media"
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework_simplejwt.authentication.JWTAuthentication",
-    ]
+    ],
+    "EXCEPTION_HANDLER": "requestlogs.views.exception_handler",
 }
 
 SIMPLE_JWT = {
@@ -180,4 +186,56 @@ SIMPLE_JWT = {
     "SLIDING_TOKEN_REFRESH_EXP_CLAIM": "refresh_exp",
     "SLIDING_TOKEN_LIFETIME": timedelta(minutes=5),
     "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=1),
+}
+
+# Logging
+KAFKA_BOOTSTRAP_SERVERS = os.environ.get("KAFKA_BOOTSTRAP_SERVERS", "")
+KAFKA_TOPIC = os.environ.get("KAFKA_TOPIC", "")
+KAFKA_PRODUCER_INIT_RETRIES = int(os.environ.get("KAFKA_PRODUCER_INIT_RETRIES", ""))
+KAFKA_FLUSH_BUFFER_SIZE = float(os.environ.get("KAFKA_FLUSH_BUFFER_SIZE", ""))
+KAFKA_FLUSH_INTERVAL = float(os.environ.get("KAFKA_FLUSH_INTERVAL", ""))
+
+REQUESTLOGS = {
+    "STORAGE_CLASS": "core.logging.storages.KafkaStorage",
+    "ENTRY_CLASS": "requestlogs.entries.RequestLogEntry",
+    "SERIALIZER_CLASS": "requestlogs.storages.RequestIdEntrySerializer",
+    "SECRETS": [
+        "password",
+        "access",
+        "token",
+        "refresh",
+        "HTTP_AUTHORIZATION",
+        "HTTP_POSTMAN_TOKEN",
+        "email",
+        "is_staff",
+        "csrfmiddlewaretoken",
+        "csrftoken",
+        "sessionid",
+    ],
+    "ATTRIBUTE_NAME": "_requestlog",
+    "METHODS": ("GET", "PUT", "PATCH", "POST", "DELETE"),
+    "JSON_ENSURE_ASCII": True,
+}
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "requestlogs_to_file": {
+            "level": "INFO",
+            "class": "logging.FileHandler",
+            "filename": "/app/logs/requestlogs.log",
+        },
+        "requestlogs_to_kafka": {
+            "level": "INFO",
+            "class": "core.logging.handlers.MyKafkaLoggingHandler",
+        },
+    },
+    "loggers": {
+        "requestlogs": {
+            "handlers": ["requestlogs_to_kafka"],
+            "level": "INFO",
+            "propagate": False,
+        },
+    },
 }
