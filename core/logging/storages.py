@@ -37,4 +37,5 @@ class KafkaStorage(LoggingStorage):
         kafka_entry["response_code"] = entry.response.status_code
         kafka_entry["response_data"] = json.dumps(entry.response.data)
         kafka_entry["env_code"] = settings.DJANGO_ENV
+
         logger.info(json.dumps(kafka_entry))
