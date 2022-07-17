@@ -12,14 +12,44 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
-    def list(self, request):
-        return Response(status=status.HTTP_403_FORBIDDEN)
-
     def retrieve(self, request, pk=None):
         requesting_user = self.request.user
         queryset = User.objects.all()
         user = get_object_or_404(queryset, pk=pk)
         if requesting_user.id != user.id:
-            return Response(status=status.HTTP_403_FORBIDDEN)
+            return Response(
+                {"detail": "You can only request details of your own user."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
         serializer = UserSerializer(user)
         return Response(serializer.data)
+
+    def list(self, request):
+        return Response(
+            {"detail": f'Method "{self.request.method}" not allowed.'},
+            status=status.HTTP_405_METHOD_NOT_ALLOWED,
+        )
+
+    def create(self, request):
+        return Response(
+            {"detail": f'Method "{self.request.method}" not allowed.'},
+            status=status.HTTP_405_METHOD_NOT_ALLOWED,
+        )
+
+    def update(self, request):
+        return Response(
+            {"detail": f'Method "{self.request.method}" not allowed.'},
+            status=status.HTTP_405_METHOD_NOT_ALLOWED,
+        )
+
+    def partial_update(self, request):
+        return Response(
+            {"detail": f'Method "{self.request.method}" not allowed.'},
+            status=status.HTTP_405_METHOD_NOT_ALLOWED,
+        )
+
+    def destroy(self, request):
+        return Response(
+            {"detail": f'Method "{self.request.method}" not allowed.'},
+            status=status.HTTP_405_METHOD_NOT_ALLOWED,
+        )
