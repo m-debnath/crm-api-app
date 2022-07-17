@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
 from api.admin.serializers import UserSerializer
+from api.utils import method_not_allowed_message
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -26,30 +27,30 @@ class UserViewSet(viewsets.ModelViewSet):
 
     def list(self, request):
         return Response(
-            {"detail": f'Method "{self.request.method}" not allowed.'},
+            method_not_allowed_message(self.request.method),
             status=status.HTTP_405_METHOD_NOT_ALLOWED,
         )
 
     def create(self, request):
         return Response(
-            {"detail": f'Method "{self.request.method}" not allowed.'},
+            method_not_allowed_message(self.request.method),
             status=status.HTTP_405_METHOD_NOT_ALLOWED,
         )
 
     def update(self, request):
         return Response(
-            {"detail": f'Method "{self.request.method}" not allowed.'},
+            method_not_allowed_message(self.request.method),
             status=status.HTTP_405_METHOD_NOT_ALLOWED,
         )
 
     def partial_update(self, request):
         return Response(
-            {"detail": f'Method "{self.request.method}" not allowed.'},
+            method_not_allowed_message(self.request.method),
             status=status.HTTP_405_METHOD_NOT_ALLOWED,
         )
 
     def destroy(self, request):
         return Response(
-            {"detail": f'Method "{self.request.method}" not allowed.'},
+            method_not_allowed_message(self.request.method),
             status=status.HTTP_405_METHOD_NOT_ALLOWED,
         )
