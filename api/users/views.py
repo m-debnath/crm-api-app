@@ -13,7 +13,7 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
-    def retrieve(self, request, pk=None):
+    def retrieve(self, _, pk=None):
         requesting_user = self.request.user
         queryset = User.objects.all()
         user = get_object_or_404(queryset, pk=pk)
@@ -25,31 +25,31 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer = UserSerializer(user)
         return Response(serializer.data)
 
-    def list(self, request):
+    def list(self, _):
         return Response(
             method_not_allowed_message(self.request.method),
             status=status.HTTP_405_METHOD_NOT_ALLOWED,
         )
 
-    def create(self, request):
+    def create(self, _):
         return Response(
             method_not_allowed_message(self.request.method),
             status=status.HTTP_405_METHOD_NOT_ALLOWED,
         )
 
-    def update(self, request):
+    def update(self, _):
         return Response(
             method_not_allowed_message(self.request.method),
             status=status.HTTP_405_METHOD_NOT_ALLOWED,
         )
 
-    def partial_update(self, request):
+    def partial_update(self, _):
         return Response(
             method_not_allowed_message(self.request.method),
             status=status.HTTP_405_METHOD_NOT_ALLOWED,
         )
 
-    def destroy(self, request):
+    def destroy(self, _):
         return Response(
             method_not_allowed_message(self.request.method),
             status=status.HTTP_405_METHOD_NOT_ALLOWED,
