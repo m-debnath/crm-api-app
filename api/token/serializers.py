@@ -1,6 +1,5 @@
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-
 from core.logging.utils import log_performance_to_kafka
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
