@@ -142,7 +142,7 @@ CORS_ALLOW_HEADERS = (
     "accept",
     "origin",
     "authorization",
-    "x-business-process-id",
+    os.environ.get("BUSINESS_PROCESS_HEADER", "x-business-process-id").lower(),
 )
 
 SESSION_COOKIE_SECURE = os.environ.get("SESSION_COOKIE_SECURE", "True") == "True"
