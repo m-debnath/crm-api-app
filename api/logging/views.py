@@ -21,7 +21,7 @@ def log_to_kafka(request):
         kafka_entry.val = request.data
         t = threading.Thread(target=logger.info, args=(json.dumps(kafka_entry.val),))
         t.start()
-        return Response(status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_201_CREATED)
     else:
         # Sample message for post
         return Response(
