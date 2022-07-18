@@ -196,7 +196,7 @@ KAFKA_FLUSH_BUFFER_SIZE = float(os.environ.get("KAFKA_FLUSH_BUFFER_SIZE", ""))
 KAFKA_FLUSH_INTERVAL = float(os.environ.get("KAFKA_FLUSH_INTERVAL", ""))
 
 REQUESTLOGS = {
-    "STORAGE_CLASS": "core.logging.storages.KafkaStorage",
+    "STORAGE_CLASS": "core.logging.storages.MyKafkaStorage",
     "ENTRY_CLASS": "requestlogs.entries.RequestLogEntry",
     "SERIALIZER_CLASS": "requestlogs.storages.RequestIdEntrySerializer",
     "SECRETS": [

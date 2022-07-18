@@ -9,7 +9,7 @@ from requestlogs.storages import LoggingStorage
 logger = logging.getLogger("requestlogs")
 
 
-class KafkaStorage(LoggingStorage):
+class MyKafkaStorage(LoggingStorage):
     def store(self, entry):
         kafka_entry = {}
 
