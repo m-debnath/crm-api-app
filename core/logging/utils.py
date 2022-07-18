@@ -44,7 +44,7 @@ def log_memory_usage(func):
                 "host": socket.gethostname(),
                 "host_ip": socket.gethostbyname(socket.gethostname()),
                 "id": uuid.uuid4().hex,
-                "event_type": "resource_usage",
+                "event_type": "perf",
                 "@timestamp": datetime.datetime.utcnow().isoformat(),
                 "env_code": settings.DJANGO_ENV,
                 "func_name": f"{func.__module__}.{func.__qualname__}",
