@@ -13,18 +13,23 @@ class MyKafkaStorage(LoggingStorage):
     def store(self, entry):
         kafka_entry = {}
 
+        request_path = entry.request.full_path
         response_code = entry.response.status_code
         response_data = json.dumps(entry.response.data)
 
         # Skip logging in certain conditions
         if (
-            response_code == 401
-            and "AccessToken" in response_data
-            and "token_not_valid" in response_data
-        ) or (
-            response_code == 405
-            and "GET" in response_data
-            and "not allowed" in response_data
+            (
+                response_code == 401
+                and "AccessToken" in response_data
+                and "token_not_valid" in response_data
+            )
+            or (
+                response_code == 405
+                and "GET" in response_data
+                and "not allowed" in response_data
+            )
+            or (response_code == 200 and "/api/token/refresh/" in request_path)
         ):
             return None
 
