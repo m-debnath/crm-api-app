@@ -1,11 +1,10 @@
+from core.logging.utils import log_error_to_kafka, log_performance_to_kafka
 from django.conf import settings
 from django.contrib.auth.backends import BaseBackend
 from django.contrib.auth.models import User
 from django.utils import timezone
 from ldap3 import ALL, ALL_ATTRIBUTES, Connection, Server
 from ldap3.core.exceptions import LDAPException
-
-from core.logging.utils import log_performance_to_kafka, log_error_to_kafka
 
 
 class LdapAuthenticationBackend(BaseBackend):

@@ -5,8 +5,8 @@ import logging
 import socket
 import threading
 import uuid
+from resource import RUSAGE_SELF, getrusage
 from time import monotonic_ns
-from resource import getrusage, RUSAGE_SELF
 
 from django.conf import settings
 from django.http import HttpRequest
@@ -57,9 +57,7 @@ def log_performance_to_kafka(func):
                 "msecs": duration,
                 "username": username,
             }
-            t = threading.Thread(
-                target=logger.info, args=(json.dumps(kafka_entry.val),)
-            )
+            t = threading.Thread(target=logger.info, args=(json.dumps(kafka_entry.val),))
             t.start()
         return return_value
 

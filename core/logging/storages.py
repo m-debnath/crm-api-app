@@ -23,11 +23,7 @@ class MyKafkaStorage(LoggingStorage):
                 and "AccessToken" in response_data
                 and "token_not_valid" in response_data
             )
-            or (
-                response_code == 405
-                and "GET" in response_data
-                and "not allowed" in response_data
-            )
+            or (response_code == 405 and "GET" in response_data and "not allowed" in response_data)
             or (response_code == 200 and "/api/token/refresh/" in request_path)
         ):
             return None
@@ -46,9 +42,7 @@ class MyKafkaStorage(LoggingStorage):
 
         username = ""
         try:
-            username = (
-                entry.user["username"] if entry.user["username"] is not None else ""
-            )
+            username = entry.user["username"] if entry.user["username"] is not None else ""
         except AttributeError:
             pass
 
