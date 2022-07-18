@@ -37,7 +37,7 @@ class MyKafkaStorage(LoggingStorage):
         if kafka_entry["request_path"].startswith("/api"):
             kafka_entry["event_type"] = "api"
         else:
-            kafka_entry["event_type"] = "admin_site"
+            kafka_entry["event_type"] = "admin"
         kafka_entry["@timestamp"] = datetime.datetime.utcnow().isoformat()
         kafka_entry["msecs"] = round(entry.execution_time.total_seconds() * 1000)
         try:

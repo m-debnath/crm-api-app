@@ -58,3 +58,19 @@ def log_memory_usage(func):
         return return_value
 
     return wrapper
+
+
+def log_error(*args, **kwargs):
+    print(kwargs)
+    kafka_entry = {
+        "host": socket.gethostname(),
+        "host_ip": socket.gethostbyname(socket.gethostname()),
+        "id": uuid.uuid4().hex,
+        "event_type": "error",
+        "@timestamp": datetime.datetime.utcnow().isoformat(),
+        "env_code": settings.DJANGO_ENV,
+        "func_name": kwargs.get("func_name"),
+        "error_message": kwargs.get("error_message"),
+        "username": kwargs.get("username"),
+    }
+    logger.info(json.dumps(kafka_entry))

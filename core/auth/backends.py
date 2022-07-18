@@ -5,7 +5,7 @@ from django.utils import timezone
 from ldap3 import ALL, ALL_ATTRIBUTES, Connection, Server
 from ldap3.core.exceptions import LDAPException
 
-from core.logging.utils import log_memory_usage
+from core.logging.utils import log_memory_usage, log_error
 
 
 class LdapAuthenticationBackend(BaseBackend):
@@ -26,12 +26,22 @@ class LdapAuthenticationBackend(BaseBackend):
             )
             if ldap_connection.result["description"] != "success":
                 ldap_connection.unbind()
-                print(
-                    f"Unable to connect to LDAP server {settings.LDAP_HOST} using {settings.LDAP_APPUSER}"
+                error_message = f"Unable to connect to LDAP server {settings.LDAP_HOST} using {settings.LDAP_APPUSER}"
+                log_error(
+                    {
+                        "func_name": f"{__name__}.LdapAuthenticationBackend.authenticate",
+                        "error_message": error_message,
+                        "username": username,
+                    }
                 )
                 return None
         except LDAPException:
-            print(f"Unable to connect to LDAP server {settings.LDAP_HOST}")
+            err_kwargs = {
+                "func_name": f"{__name__}.LdapAuthenticationBackend.authenticate",
+                "error_message": f"Unable to connect to LDAP server {settings.LDAP_HOST}",
+                "username": username,
+            }
+            log_error(**err_kwargs)
             return None
         if not ldap_connection.search(
             settings.LDAP_USER_BASEDN,
@@ -39,7 +49,12 @@ class LdapAuthenticationBackend(BaseBackend):
             attributes=ALL_ATTRIBUTES,
         ):
             ldap_connection.unbind()
-            print(f"User {username} not found on LDAP dn {settings.LDAP_USER_BASEDN}")
+            err_kwargs = {
+                "func_name": f"{__name__}.LdapAuthenticationBackend.authenticate",
+                "error_message": f"User {username} not found on LDAP dn {settings.LDAP_USER_BASEDN}",
+                "username": username,
+            }
+            log_error(**err_kwargs)
             return None
         else:
             if len(ldap_connection.entries) > 0:
@@ -57,13 +72,24 @@ class LdapAuthenticationBackend(BaseBackend):
                     ldap_connection.bind()
                     if ldap_connection.result["description"] != "success":
                         ldap_connection.unbind()
-                        print("Invalid username / password")
+                        err_kwargs = {
+                            "func_name": f"{__name__}.LdapAuthenticationBackend.authenticate",
+                            "error_message": "Invalid username / password",
+                            "username": username,
+                        }
+                        log_error(**err_kwargs)
                         return None
                     else:
                         try:
                             user = User.objects.get(username=username)
                             if not user.is_active:
                                 print("User inactive or deleted")
+                                err_kwargs = {
+                                    "func_name": f"{__name__}.LdapAuthenticationBackend.authenticate",
+                                    "error_message": "User inactive or deleted",
+                                    "username": username,
+                                }
+                                log_error(**err_kwargs)
                                 return None
                         except User.DoesNotExist:
                             user = User(username=username)
@@ -75,6 +101,11 @@ class LdapAuthenticationBackend(BaseBackend):
                         ldap_connection.unbind()
                         return user
                 except LDAPException:
-                    print("Invalid username / password")
+                    err_kwargs = {
+                        "func_name": f"{__name__}.LdapAuthenticationBackend.authenticate",
+                        "error_message": "Invalid username / password",
+                        "username": username,
+                    }
+                    log_error(**err_kwargs)
                     return None
         return None
