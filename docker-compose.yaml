@@ -11,6 +11,8 @@ services:
       - .:/app
       - crm-api-app-static-data:/vol/web
     environment:
+      - APP_NAME=${APP_NAME}
+      - BUSINESS_PROCESS_HEADER=${BUSINESS_PROCESS_HEADER}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
@@ -43,8 +45,8 @@ services:
       - KAFKA_FLUSH_BUFFER_SIZE=${KAFKA_FLUSH_BUFFER_SIZE}
       - KAFKA_FLUSH_INTERVAL=${KAFKA_FLUSH_INTERVAL}
       - REQUESTLOGS_SECRETS=${REQUESTLOGS_SECRETS}
-      - APP_NAME=${APP_NAME}
-      - BUSINESS_PROCESS_HEADER=${BUSINESS_PROCESS_HEADER}
+      - TEST_USER=${TEST_USER}
+      - TEST_USER_PASSWORD=${TEST_USER_PASSWORD}
   crm-api-app-proxy:
     build:
       context: ./proxy

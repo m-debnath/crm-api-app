@@ -200,9 +200,7 @@ KAFKA_PRODUCER_INIT_RETRIES = int(os.environ.get("KAFKA_PRODUCER_INIT_RETRIES", 
 KAFKA_FLUSH_BUFFER_SIZE = float(os.environ.get("KAFKA_FLUSH_BUFFER_SIZE", ""))
 KAFKA_FLUSH_INTERVAL = float(os.environ.get("KAFKA_FLUSH_INTERVAL", ""))
 
-REQUESTLOGS_SECRETS_STR = os.environ.get(
-    "REQUESTLOGS_SECRETS", "password,access,token,refresh"
-)
+REQUESTLOGS_SECRETS_STR = os.environ.get("REQUESTLOGS_SECRETS", "password,access,token,refresh")
 REQUESTLOGS_SECRETS = REQUESTLOGS_SECRETS_STR.split(",")
 REQUESTLOGS = {
     "STORAGE_CLASS": "core.logging.storages.MyKafkaStorage",
@@ -231,3 +229,7 @@ LOGGING = {
         },
     },
 }
+
+# Unit Testing
+TEST_USER = os.environ.get("TEST_USER")
+TEST_USER_PASSWORD = os.environ.get("TEST_USER_PASSWORD")
