@@ -1,7 +1,6 @@
+from core.logging.utils import log_performance_to_kafka
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-
-from core.logging.utils import log_performance_to_kafka
 
 
 @api_view(["GET"])

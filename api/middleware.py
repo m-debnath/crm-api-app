@@ -1,5 +1,6 @@
-from django.conf import settings
 import uuid
+
+from django.conf import settings
 
 
 class CustomHeaderMiddleware:
