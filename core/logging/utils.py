@@ -8,6 +8,7 @@ from time import monotonic_ns
 from resource import getrusage, RUSAGE_SELF
 
 from django.conf import settings
+from django.http import HttpRequest
 from rest_framework.request import Request
 
 logger = logging.getLogger("requestlogs")
@@ -33,10 +34,10 @@ def log_memory_usage(func):
             pass
 
         if mem_before != -1 and mem_after != -1:
-            username = "None"
+            username = ""
             for arg in args:
-                if isinstance(arg, Request):
-                    username = getattr(arg.user, "username", "None")
+                if isinstance(arg, Request) or isinstance(arg, HttpRequest):
+                    username = getattr(arg.user, "username", "")
                     break
             mem_usage = mem_after - mem_before
             duration = round((stop_timer - start_timer) / 1_000_000)

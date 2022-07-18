@@ -48,7 +48,7 @@ class MyKafkaStorage(LoggingStorage):
         try:
             kafka_entry["username"] = entry.user["username"]
         except AttributeError:
-            kafka_entry["username"] = "None"
+            kafka_entry["username"] = ""
 
         kafka_entry["http_method"] = entry.request.method
 
