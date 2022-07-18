@@ -5,8 +5,11 @@ from django.utils import timezone
 from ldap3 import ALL, ALL_ATTRIBUTES, Connection, Server
 from ldap3.core.exceptions import LDAPException
 
+from core.logging.utils import log_memory_usage
+
 
 class LdapAuthenticationBackend(BaseBackend):
+    @log_memory_usage
     def authenticate(self, request, username=None, password=None):
         try:
             ldap_server = Server(
