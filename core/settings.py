@@ -196,24 +196,15 @@ KAFKA_PRODUCER_INIT_RETRIES = int(os.environ.get("KAFKA_PRODUCER_INIT_RETRIES", 
 KAFKA_FLUSH_BUFFER_SIZE = float(os.environ.get("KAFKA_FLUSH_BUFFER_SIZE", ""))
 KAFKA_FLUSH_INTERVAL = float(os.environ.get("KAFKA_FLUSH_INTERVAL", ""))
 
+REQUESTLOGS_SECRETS_STR = os.environ.get(
+    "REQUESTLOGS_SECRETS", "password,access,token,refresh"
+)
+REQUESTLOGS_SECRETS = REQUESTLOGS_SECRETS_STR.split(",")
 REQUESTLOGS = {
     "STORAGE_CLASS": "core.logging.storages.MyKafkaStorage",
     "ENTRY_CLASS": "requestlogs.entries.RequestLogEntry",
     "SERIALIZER_CLASS": "requestlogs.storages.RequestIdEntrySerializer",
-    "SECRETS": [
-        "password",
-        "access",
-        "token",
-        "refresh",
-        "HTTP_AUTHORIZATION",
-        "HTTP_POSTMAN_TOKEN",
-        "email",
-        "is_staff",
-        "csrfmiddlewaretoken",
-        "csrftoken",
-        "sessionid",
-        "HTTP_COOKIE",
-    ],
+    "SECRETS": REQUESTLOGS_SECRETS,
     "ATTRIBUTE_NAME": "_requestlog",
     "METHODS": ("GET", "PUT", "PATCH", "POST", "DELETE"),
     "JSON_ENSURE_ASCII": True,
