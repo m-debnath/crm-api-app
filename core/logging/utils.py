@@ -14,7 +14,7 @@ from rest_framework.request import Request
 logger = logging.getLogger("requestlogs")
 
 
-def log_memory_usage(func):
+def log_performance_to_kafka(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         try:
@@ -61,7 +61,7 @@ def log_memory_usage(func):
     return wrapper
 
 
-def log_error(*args, **kwargs):
+def log_error_to_kafka(*args, **kwargs):
     print(kwargs)
     kafka_entry = {
         "host": socket.gethostname(),

@@ -7,7 +7,7 @@ from rest_framework.permissions import IsAuthenticated
 from api.admin.serializers import UserSerializer
 from api.utils import method_not_allowed_message
 
-from core.logging.utils import log_memory_usage
+from core.logging.utils import log_performance_to_kafka
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -15,7 +15,7 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
-    @log_memory_usage
+    @log_performance_to_kafka
     def retrieve(self, request, pk=None):
         requesting_user = self.request.user
         queryset = User.objects.all()

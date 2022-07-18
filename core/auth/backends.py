@@ -5,11 +5,11 @@ from django.utils import timezone
 from ldap3 import ALL, ALL_ATTRIBUTES, Connection, Server
 from ldap3.core.exceptions import LDAPException
 
-from core.logging.utils import log_memory_usage, log_error
+from core.logging.utils import log_performance_to_kafka, log_error_to_kafka
 
 
 class LdapAuthenticationBackend(BaseBackend):
-    @log_memory_usage
+    @log_performance_to_kafka
     def authenticate(self, request, username=None, password=None):
         try:
             ldap_server = Server(
@@ -27,7 +27,7 @@ class LdapAuthenticationBackend(BaseBackend):
             if ldap_connection.result["description"] != "success":
                 ldap_connection.unbind()
                 error_message = f"Unable to connect to LDAP server {settings.LDAP_HOST} using {settings.LDAP_APPUSER}"
-                log_error(
+                log_error_to_kafka(
                     {
                         "func_name": f"{__name__}.LdapAuthenticationBackend.authenticate",
                         "error_message": error_message,
@@ -41,7 +41,7 @@ class LdapAuthenticationBackend(BaseBackend):
                 "error_message": f"Unable to connect to LDAP server {settings.LDAP_HOST}",
                 "username": username,
             }
-            log_error(**err_kwargs)
+            log_error_to_kafka(**err_kwargs)
             return None
         if not ldap_connection.search(
             settings.LDAP_USER_BASEDN,
@@ -54,7 +54,7 @@ class LdapAuthenticationBackend(BaseBackend):
                 "error_message": f"User {username} not found on LDAP dn {settings.LDAP_USER_BASEDN}",
                 "username": username,
             }
-            log_error(**err_kwargs)
+            log_error_to_kafka(**err_kwargs)
             return None
         else:
             if len(ldap_connection.entries) > 0:
@@ -77,7 +77,7 @@ class LdapAuthenticationBackend(BaseBackend):
                             "error_message": "Invalid username / password",
                             "username": username,
                         }
-                        log_error(**err_kwargs)
+                        log_error_to_kafka(**err_kwargs)
                         return None
                     else:
                         try:
@@ -89,7 +89,7 @@ class LdapAuthenticationBackend(BaseBackend):
                                     "error_message": "User inactive or deleted",
                                     "username": username,
                                 }
-                                log_error(**err_kwargs)
+                                log_error_to_kafka(**err_kwargs)
                                 return None
                         except User.DoesNotExist:
                             user = User(username=username)
@@ -106,6 +106,6 @@ class LdapAuthenticationBackend(BaseBackend):
                         "error_message": "Invalid username / password",
                         "username": username,
                     }
-                    log_error(**err_kwargs)
+                    log_error_to_kafka(**err_kwargs)
                     return None
         return None

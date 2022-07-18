@@ -1,11 +1,11 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from core.logging.utils import log_memory_usage
+from core.logging.utils import log_performance_to_kafka
 
 
 @api_view(["GET"])
-@log_memory_usage
+@log_performance_to_kafka
 def getRoutes(request):
     routes = [
         "/api/token",

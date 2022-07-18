@@ -11,8 +11,6 @@ logger = logging.getLogger("requestlogs")
 
 class MyKafkaStorage(LoggingStorage):
     def store(self, entry):
-        kafka_entry = {}
-
         request_path = entry.request.full_path
         response_code = entry.response.status_code
         response_data = json.dumps(entry.response.data)
@@ -33,36 +31,54 @@ class MyKafkaStorage(LoggingStorage):
         ):
             return None
 
-        kafka_entry["host"] = socket.gethostname()
-        kafka_entry["host_ip"] = socket.gethostbyname(socket.gethostname())
+        host = socket.gethostname()
+        host_ip = socket.gethostbyname(socket.gethostname())
 
-        kafka_entry["id"] = entry.request.request_id
-        kafka_entry["request_path"] = entry.request.full_path
+        _id = entry.request.request_id
 
-        if kafka_entry["request_path"].startswith("/api"):
-            kafka_entry["event_type"] = "api"
+        if request_path.startswith("/api"):
+            event_type = "api"
         else:
-            kafka_entry["event_type"] = "admin"
-        kafka_entry["@timestamp"] = datetime.datetime.utcnow().isoformat()
-        kafka_entry["msecs"] = round(entry.execution_time.total_seconds() * 1000)
-        try:
-            kafka_entry["username"] = entry.user["username"]
-        except AttributeError:
-            kafka_entry["username"] = ""
+            event_type = "admin"
 
-        kafka_entry["http_method"] = entry.request.method
+        msecs = round(entry.execution_time.total_seconds() * 1000)
+
+        username = ""
+        try:
+            username = (
+                entry.user["username"] if entry.user["username"] is not None else ""
+            )
+        except AttributeError:
+            pass
+
+        http_method = entry.request.method
 
         bp_header_name = settings.BUSINESS_PROCESS_HEADER
-        kafka_entry["bp_id"] = entry.response.response.headers.get(bp_header_name)
+        bp_id = entry.response.response.headers.get(bp_header_name)
 
-        kafka_entry["request_headers"] = json.dumps(entry.request.request_headers)
-        kafka_entry["request_query_params"] = json.dumps(entry.request.query_params)
-        kafka_entry["request_data"] = json.dumps(entry.request.data)
+        request_headers = json.dumps(entry.request.request_headers)
+        request_query_params = json.dumps(entry.request.query_params)
+        request_data = json.dumps(entry.request.data)
+        response_headers = str(entry.response.response.headers)
 
-        kafka_entry["response_code"] = response_code
-        kafka_entry["response_headers"] = str(entry.response.response.headers)
-        kafka_entry["response_data"] = response_data
-
-        kafka_entry["env_code"] = settings.DJANGO_ENV
+        kafka_entry = {
+            "host": host,
+            "host_ip": host_ip,
+            "id": _id,
+            "request_path": request_path,
+            "event_type": event_type,
+            "@timestamp": datetime.datetime.utcnow().isoformat(),
+            "msecs": msecs,
+            "username": username,
+            "http_method": http_method,
+            "bp_id": bp_id,
+            "request_headers": request_headers,
+            "request_query_params": request_query_params,
+            "request_data": request_data,
+            "response_code": response_code,
+            "response_headers": response_headers,
+            "response_data": response_data,
+            "env_code": settings.DJANGO_ENV,
+        }
 
         logger.info(json.dumps(kafka_entry))

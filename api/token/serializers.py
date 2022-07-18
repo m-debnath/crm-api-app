@@ -1,11 +1,11 @@
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
-from core.logging.utils import log_memory_usage
+from core.logging.utils import log_performance_to_kafka
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
-    @log_memory_usage
+    @log_performance_to_kafka
     def get_token(cls, user):
         token = super().get_token(user)
 
