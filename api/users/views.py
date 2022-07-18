@@ -7,13 +7,16 @@ from rest_framework.permissions import IsAuthenticated
 from api.admin.serializers import UserSerializer
 from api.utils import method_not_allowed_message
 
+from core.logging.utils import log_memory_usage
+
 
 class UserViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
-    def retrieve(self, _, pk=None):
+    @log_memory_usage
+    def retrieve(self, request, pk=None):
         requesting_user = self.request.user
         queryset = User.objects.all()
         user = get_object_or_404(queryset, pk=pk)
