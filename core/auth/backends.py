@@ -83,7 +83,6 @@ class LdapAuthenticationBackend(BaseBackend):
                         try:
                             user = User.objects.get(username=username)
                             if not user.is_active:
-                                print("User inactive or deleted")
                                 err_kwargs = {
                                     "func_name": f"{__name__}.LdapAuthenticationBackend.authenticate",
                                     "error_message": "User inactive or deleted",

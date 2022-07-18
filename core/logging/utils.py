@@ -3,6 +3,7 @@ import functools
 import json
 import logging
 import socket
+import threading
 import uuid
 from time import monotonic_ns
 from resource import getrusage, RUSAGE_SELF
@@ -41,7 +42,8 @@ def log_performance_to_kafka(func):
                     break
             mem_usage = mem_after - mem_before
             duration = round((stop_timer - start_timer) / 1_000_000)
-            kafka_entry = {
+            kafka_entry = threading.local()
+            kafka_entry.val = {
                 "host": socket.gethostname(),
                 "host_ip": socket.gethostbyname(socket.gethostname()),
                 "id": uuid.uuid4().hex,
@@ -55,15 +57,18 @@ def log_performance_to_kafka(func):
                 "msecs": duration,
                 "username": username,
             }
-            logger.info(json.dumps(kafka_entry))
+            t = threading.Thread(
+                target=logger.info, args=(json.dumps(kafka_entry.val),)
+            )
+            t.start()
         return return_value
 
     return wrapper
 
 
 def log_error_to_kafka(*args, **kwargs):
-    print(kwargs)
-    kafka_entry = {
+    kafka_entry = threading.local()
+    kafka_entry.val = {
         "host": socket.gethostname(),
         "host_ip": socket.gethostbyname(socket.gethostname()),
         "id": uuid.uuid4().hex,
@@ -74,4 +79,5 @@ def log_error_to_kafka(*args, **kwargs):
         "error_message": kwargs.get("error_message"),
         "username": kwargs.get("username"),
     }
-    logger.info(json.dumps(kafka_entry))
+    t = threading.Thread(target=logger.info, args=(json.dumps(kafka_entry.val),))
+    t.start()

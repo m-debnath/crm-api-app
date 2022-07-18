@@ -11,5 +11,6 @@ urlpatterns = [
     path("", getRoutes),
     path("token/", include("api.token.urls")),
     path("admin/", include("api.admin.urls")),
+    path("logging/", include("api.logging.urls")),
     path("users/", include(user_router.urls)),
 ]

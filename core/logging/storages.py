@@ -2,6 +2,7 @@ import datetime
 import json
 import logging
 import socket
+import threading
 
 from django.conf import settings
 from requestlogs.storages import LoggingStorage
@@ -61,7 +62,8 @@ class MyKafkaStorage(LoggingStorage):
         request_data = json.dumps(entry.request.data)
         response_headers = str(entry.response.response.headers)
 
-        kafka_entry = {
+        kafka_entry = threading.local()
+        kafka_entry.val = {
             "host": host,
             "host_ip": host_ip,
             "id": _id,
@@ -80,5 +82,5 @@ class MyKafkaStorage(LoggingStorage):
             "response_data": response_data,
             "env_code": settings.DJANGO_ENV,
         }
-
-        logger.info(json.dumps(kafka_entry))
+        t = threading.Thread(target=logger.info, args=(json.dumps(kafka_entry.val),))
+        t.start()

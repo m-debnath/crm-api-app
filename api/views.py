@@ -11,6 +11,7 @@ def getRoutes(request):
         "/api/token",
         "/api/token/refresh",
         "/api/admin/users",
+        "/api/logging",
         "/api/users",
     ]
     return Response(routes)
