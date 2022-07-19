@@ -23,7 +23,7 @@ class LdapAuthenticationBackend(BaseBackend):
                 password=settings.LDAP_APPUSER_PASSWORD,
                 auto_bind=True,
             )
-            if ldap_connection.result["description"] != "success":
+            if ldap_connection.result["description"] != "success":  # pragma: no cover
                 ldap_connection.unbind()
                 error_message = f"Unable to connect to LDAP server {settings.LDAP_HOST} using {settings.LDAP_APPUSER}"
                 log_error_to_kafka(
@@ -34,7 +34,7 @@ class LdapAuthenticationBackend(BaseBackend):
                     }
                 )
                 return None
-        except LDAPException:
+        except LDAPException:  # pragma: no cover
             err_kwargs = {
                 "func_name": f"{__name__}.LdapAuthenticationBackend.authenticate",
                 "error_message": f"Unable to connect to LDAP server {settings.LDAP_HOST}",
@@ -69,7 +69,7 @@ class LdapAuthenticationBackend(BaseBackend):
                     )
                     ldap_connection.open()
                     ldap_connection.bind()
-                    if ldap_connection.result["description"] != "success":
+                    if ldap_connection.result["description"] != "success":  # pragma: no cover
                         ldap_connection.unbind()
                         err_kwargs = {
                             "func_name": f"{__name__}.LdapAuthenticationBackend.authenticate",
@@ -81,7 +81,7 @@ class LdapAuthenticationBackend(BaseBackend):
                     else:
                         try:
                             user = User.objects.get(username=username)
-                            if not user.is_active:
+                            if not user.is_active:  # pragma: no cover
                                 err_kwargs = {
                                     "func_name": f"{__name__}.LdapAuthenticationBackend.authenticate",
                                     "error_message": "User inactive or deleted",
@@ -98,7 +98,7 @@ class LdapAuthenticationBackend(BaseBackend):
                         user.save()
                         ldap_connection.unbind()
                         return user
-                except LDAPException:
+                except LDAPException:  # pragma: no cover
                     err_kwargs = {
                         "func_name": f"{__name__}.LdapAuthenticationBackend.authenticate",
                         "error_message": "Invalid username / password",
@@ -106,4 +106,3 @@ class LdapAuthenticationBackend(BaseBackend):
                     }
                     log_error_to_kafka(**err_kwargs)
                     return None
-        return None
