@@ -5,11 +5,13 @@ ENV PATH="/app/scripts:${PATH}"
 
 WORKDIR /app
 
-COPY ./requirements.txt /app
 RUN apk update \
     && apk add --virtual build-deps linux-headers gcc python3-dev libc-dev musl-dev \
     && apk add bash postgresql-dev libffi-dev
+
+COPY ./requirements.txt /app
 RUN pip install --no-cache-dir --upgrade -r requirements.txt
+
 RUN apk del build-deps
 
 COPY . /app
