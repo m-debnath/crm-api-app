@@ -3,6 +3,9 @@ from api.utils import method_not_allowed_message
 from core.logging.utils import log_performance_to_kafka
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
+from django.views.decorators.vary import vary_on_cookie
 from rest_framework import status, viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -14,6 +17,8 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
 
     @log_performance_to_kafka
+    @method_decorator(vary_on_cookie)
+    @method_decorator(cache_page(60 * 60))
     def retrieve(self, request, pk=None):
         requesting_user = self.request.user
         queryset = User.objects.all()

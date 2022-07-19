@@ -97,15 +97,20 @@ AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
 ]
 
+# Caching
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+SESSION_CACHE_ALIAS = "default"
+CACHE_TTL = 60 * 1
 CACHES = {
     "default": {
-        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": "redis://:"
         + os.environ.get("CACHE_REDIS_PASSWORD", "")
         + "@"
         + os.environ.get("CACHE_REDIS_HOST", "")
         + ":"
-        + os.environ.get("CACHE_REDIS_PORT", ""),
+        + os.environ.get("CACHE_REDIS_PORT", "")
+        + "/1",
     }
 }
 
