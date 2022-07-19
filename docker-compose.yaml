@@ -91,3 +91,6 @@ volumes:
   crm-api-app-db-data:
   crm-api-app-static-data:
   crm-api-app-pgadmin-data:
+networks:
+  default:
+    name: crm_development
