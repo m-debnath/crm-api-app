@@ -43,7 +43,7 @@ class MyKafkaStorage(LoggingStorage):
         username = ""
         try:
             username = entry.user["username"] if entry.user["username"] is not None else ""
-        except AttributeError:
+        except AttributeError:  # pragma: no cover
             pass
 
         http_method = entry.request.method

@@ -20,9 +20,8 @@ def log_performance_to_kafka(func):
     def wrapper(*args, **kwargs):
         try:
             mem_before = getrusage(RUSAGE_SELF).ru_maxrss
-        except OSError:
+        except OSError:  # pragma: no cover
             mem_before = -1
-            pass
 
         start_timer = monotonic_ns()
         return_value = func(*args, **kwargs)
@@ -30,9 +29,8 @@ def log_performance_to_kafka(func):
 
         try:
             mem_after = getrusage(RUSAGE_SELF).ru_maxrss
-        except OSError:
+        except OSError:  # pragma: no cover
             mem_after = -1
-            pass
 
         if mem_before != -1 and mem_after != -1:
             username = ""
