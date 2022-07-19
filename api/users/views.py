@@ -26,31 +26,31 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer = UserSerializer(user)
         return Response(serializer.data)
 
-    def list(self, _):
+    def list(self, request):
         return Response(
             method_not_allowed_message(self.request.method),
             status=status.HTTP_405_METHOD_NOT_ALLOWED,
         )
 
-    def create(self, _):
+    def create(self, request):
         return Response(
             method_not_allowed_message(self.request.method),
             status=status.HTTP_405_METHOD_NOT_ALLOWED,
         )
 
-    def update(self, _):
+    def update(self, request, pk=None):
         return Response(
             method_not_allowed_message(self.request.method),
             status=status.HTTP_405_METHOD_NOT_ALLOWED,
         )
 
-    def partial_update(self, _):
+    def partial_update(self, request, pk=None):
         return Response(
             method_not_allowed_message(self.request.method),
             status=status.HTTP_405_METHOD_NOT_ALLOWED,
         )
 
-    def destroy(self, _):
+    def destroy(self, request, pk=None):
         return Response(
             method_not_allowed_message(self.request.method),
             status=status.HTTP_405_METHOD_NOT_ALLOWED,

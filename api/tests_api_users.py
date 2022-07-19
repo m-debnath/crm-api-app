@@ -68,15 +68,41 @@ class APIUsersTestCase(APITestCase):
         # Verify
         self.assertEquals(response.status_code, expected_response_status)
 
-    def test_users_post_not_allowed(self):
+    def test_users_methods_not_allowed(self):
         # Inputs
-        endpoint = "/api/users/"
+        endpoint_1 = "/api/users/"
+        endpoint_2 = "/api/users/1/"
+        data = {}
 
         # Expected outputs
         expected_response_status = status.HTTP_405_METHOD_NOT_ALLOWED
 
         # Execute
-        response = self.client.post(endpoint)
+        response = self.client.get(endpoint_1)  # list method
+
+        # Verify
+        self.assertEquals(response.status_code, expected_response_status)
+
+        # Execute
+        response = self.client.post(endpoint_1, data=data)  # post method
+
+        # Verify
+        self.assertEquals(response.status_code, expected_response_status)
+
+        # Execute
+        response = self.client.put(endpoint_2, data=data)  # put method
+
+        # Verify
+        self.assertEquals(response.status_code, expected_response_status)
+
+        # Execute
+        response = self.client.patch(endpoint_2, data=data)  # patch method
+
+        # Verify
+        self.assertEquals(response.status_code, expected_response_status)
+
+        # Execute
+        response = self.client.delete(endpoint_2)  # delete method
 
         # Verify
         self.assertEquals(response.status_code, expected_response_status)
