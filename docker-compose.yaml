@@ -48,16 +48,6 @@ services:
       - REQUESTLOGS_SECRETS=${REQUESTLOGS_SECRETS}
       - TEST_USER=${TEST_USER}
       - TEST_USER_PASSWORD=${TEST_USER_PASSWORD}
-  crm-api-app-proxy:
-    build:
-      context: ./proxy
-    restart: unless-stopped
-    volumes:
-      - crm-api-app-static-data:/vol/static
-    ports:
-      - "8443:443"
-    depends_on:
-      - crm-api-app
   crm-api-app-cache:
     image: 'redis:7.0.3'
     restart: unless-stopped

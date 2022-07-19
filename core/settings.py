@@ -163,10 +163,10 @@ CORS_ALLOW_HEADERS = (
 SESSION_COOKIE_SECURE = os.environ.get("SESSION_COOKIE_SECURE", "True") == "True"
 CSRF_COOKIE_SECURE = os.environ.get("CSRF_COOKIE_SECURE", "True") == "True"
 
-STATIC_URL = "/static/static/"
+STATIC_URL = "/api/static/"
 STATIC_ROOT = "/vol/web/static"
 
-MEDIA_URL = "/static/media/"
+MEDIA_URL = "/api/media/"
 MEDIA_ROOT = "/vol/web/media"
 
 REST_FRAMEWORK = {
