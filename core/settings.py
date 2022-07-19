@@ -40,8 +40,8 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
@@ -50,6 +50,7 @@ MIDDLEWARE = [
     "requestlogs.middleware.RequestIdMiddleware",
     "api.middleware.CustomHeaderMiddleware",
 ]
+
 
 ROOT_URLCONF = "core.urls"
 
@@ -98,21 +99,30 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 # Caching
+CACHE_MIDDLEWARE_ALIAS = "default"
+CACHE_MIDDLEWARE_SECONDS = int(os.environ.get("CACHE_REDIS_TIMEOUT_SECONDS", "300"))
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "default"
-CACHE_TTL = 60 * 1
 CACHES = {
     "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
         "LOCATION": "redis://:"
         + os.environ.get("CACHE_REDIS_PASSWORD", "")
         + "@"
         + os.environ.get("CACHE_REDIS_HOST", "")
         + ":"
         + os.environ.get("CACHE_REDIS_PORT", "")
-        + "/1",
-    }
+        + "/0",
+        "TIMEOUT": CACHE_MIDDLEWARE_SECONDS,
+    },
 }
+
+MIDDLEWARE_CLASSES = (
+    "django.middleware.cache.UpdateCacheMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.cache.FetchFromCacheMiddleware",
+)
 
 AUTH_PASSWORD_VALIDATORS = [
     {
