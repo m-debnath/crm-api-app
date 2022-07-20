@@ -80,6 +80,8 @@ services:
 volumes:
   crm-api-app-db-data:
   crm-api-app-static-data:
+    external: true
+    name: crm-api-app-static-data
   crm-api-app-pgadmin-data:
 networks:
   default:
