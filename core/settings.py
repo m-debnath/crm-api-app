@@ -149,7 +149,11 @@ USE_TZ = True
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "https://localhost:8443"
+]
 CORS_ALLOW_HEADERS = (
     "content-disposition",
     "accept-encoding",
@@ -159,6 +163,7 @@ CORS_ALLOW_HEADERS = (
     "authorization",
     os.environ.get("BUSINESS_PROCESS_HEADER", "x-business-process-id").lower(),
 )
+CORS_ALLOW_CREDENTIALS = True
 
 SESSION_COOKIE_SECURE = os.environ.get("SESSION_COOKIE_SECURE", "True") == "True"
 CSRF_COOKIE_SECURE = os.environ.get("CSRF_COOKIE_SECURE", "True") == "True"
