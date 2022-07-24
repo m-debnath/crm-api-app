@@ -298,3 +298,4 @@ dist
 # SSL Certificates
 *.crt
 *.key
+.vscode/settings.json

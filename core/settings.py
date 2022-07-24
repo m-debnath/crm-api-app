@@ -150,10 +150,7 @@ USE_TZ = True
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # CORS_ORIGIN_ALLOW_ALL = True
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "https://localhost:8443"
-]
+CORS_ALLOWED_ORIGINS = ["http://localhost:3000", "https://localhost:8443"]
 CORS_ALLOW_HEADERS = (
     "content-disposition",
     "accept-encoding",
@@ -181,14 +178,14 @@ REST_FRAMEWORK = {
     "EXCEPTION_HANDLER": "requestlogs.views.exception_handler",
 }
 
-ACCESS_TOKEN_LIFETIME = int(os.environ.get("ACCESS_TOKEN_LIFETIME", "15"))
-REFRESH_TOKEN_LIFETIME = int(os.environ.get("REFRESH_TOKEN_LIFETIME", "1"))
+ACCESS_TOKEN_LIFETIME = int(os.environ.get("ACCESS_TOKEN_LIFETIME", "5"))
+REFRESH_TOKEN_LIFETIME = int(os.environ.get("REFRESH_TOKEN_LIFETIME", "30"))
 ROTATE_REFRESH_TOKENS = os.environ.get("ROTATE_REFRESH_TOKENS", "True") == "True"
 BLACKLIST_AFTER_ROTATION = os.environ.get("BLACKLIST_AFTER_ROTATION", "15") == "True"
 SIMPLE_JWT = {
     "TOKEN_OBTAIN_SERIALIZER": "api.token.serializers.MyTokenObtainPairSerializer",
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=ACCESS_TOKEN_LIFETIME),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=REFRESH_TOKEN_LIFETIME),
+    "REFRESH_TOKEN_LIFETIME": timedelta(minutes=REFRESH_TOKEN_LIFETIME),
     "ROTATE_REFRESH_TOKENS": ROTATE_REFRESH_TOKENS,
     "BLACKLIST_AFTER_ROTATION": BLACKLIST_AFTER_ROTATION,
     "UPDATE_LAST_LOGIN": True,
