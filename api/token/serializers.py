@@ -11,6 +11,5 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         # Add custom claims
         token["username"] = user.username
         token["name"] = user.get_full_name()
-        token["last_login"] = user.last_login.isoformat()
 
         return token
