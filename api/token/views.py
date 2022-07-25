@@ -42,4 +42,5 @@ class MyTokenBlacklistView(TokenBlacklistView):
         if "refresh" not in request.data:
             request.data["refresh"] = request.COOKIES.get("refresh", "")
         response = super().post(request, *args, **kwargs)
+        response.delete_cookie("refresh")
         return response
